@@ -1,0 +1,3 @@
+praw
+yt-dlp
+python-dotenv
