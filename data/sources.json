@@ -1,0 +1,4 @@
+[
+    {"platform": "reddit", "sub": "StableDiffusion", "category": "face-swap"},
+    {"platform": "civitai", "url": "https://civitai.com/api/v1/images", "category": "animation"}
+]

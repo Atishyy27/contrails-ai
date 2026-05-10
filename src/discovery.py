@@ -1,42 +1,55 @@
-import praw
+import requests
+import json
 import os
-from dotenv import load_dotenv
 import sqlite3
-import time
 
-load_dotenv()
+def run_scraper():
+    # Target subreddit
+    subreddit = "StableDiffusion"
+    url = f"https://www.reddit.com/r/{subreddit}/hot.json?limit=100"
+    headers = {'User-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
+    
+    # Ensure folder exists
+    if not os.path.exists('data'):
+        os.makedirs('data')
 
-def get_reddit_instance():
-    return praw.Reddit(
-        client_id=os.getenv('REDDIT_CLIENT_ID'),
-        client_secret=os.getenv('REDDIT_CLIENT_SECRET'),
-        user_agent=os.getenv('REDDIT_USER_AGENT')
-    )
-def discover_deepfakes(subreddit_name, limit=10):
-    reddit = get_reddit_instance()
-    subreddit = reddit.subreddit(subreddit_name)
+    print(f"Connecting to r/{subreddit}...")
+    response = requests.get(url, headers=headers)
+    
+    if response.status_code != 200:
+        print(f"Failed to fetch data. Error code: {response.status_code}")
+        return
+
+    posts = response.json().get('data', {}).get('children', [])
     conn = sqlite3.connect('data/deepfake_vault.db')
     cursor = conn.cursor()
 
-    print(f"Scanning r/{subreddit_name}...")
-    
-    # Use 'hot' instead of 'new' for higher quality, but fewer requests
-    for post in subreddit.hot(limit=limit):
-        if post.is_video or "v.redd.it" in post.url:
-            cursor.execute('''
-                INSERT OR IGNORE INTO media_vault (source_url, platform, category)
-                VALUES (?, ?, ?)
-            ''', (post.url, 'reddit', 'unknown'))
-            print(f"Logged: {post.id}")
+    found_count = 0
+    for post in posts:
+        data = post.get('data', {})
+        # Check for video content
+        if data.get('is_video') or "v.redd.it" in data.get('url', ''):
+            source_url = data.get('url')
+            # Categorize based on keywords in title
+            title = data.get('title', '').lower()
+            category = "animation"
+            if "swap" in title:
+                category = "face_swap"
+            elif "sync" in title or "talk" in title:
+                category = "lip_sync"
             
-        # THE SAFETY VALVE: Wait 2 seconds between posts to avoid 'Excessive Usage'
-        time.sleep(2) 
-    
+            try:
+                cursor.execute('''
+                    INSERT OR IGNORE INTO media_vault (source_url, platform, category)
+                    VALUES (?, ?, ?)
+                ''', (source_url, 'reddit', category))
+                found_count += 1
+            except Exception:
+                pass
+
     conn.commit()
     conn.close()
+    print(f"Done. Added {found_count} video targets to the database.")
 
 if __name__ == "__main__":
-    # Target subreddits where deepfakes/AI videos are common
-    subs = ['StableDiffusion', 'SoraAI', 'KlingAI']
-    for s in subs:
-        discover_deepfakes(s, limit=20)
+    run_scraper()
