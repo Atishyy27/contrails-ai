@@ -1,1 +1,12 @@
+# Environments
 .env
+venv/
+__pycache__/
+
+# Data (Ignore raw binaries)
+data/raw_vid/
+*.part
+*.ytdl
+
+# Database (Optional: ignore if it gets too large)
+# data/deepfake_vault.db

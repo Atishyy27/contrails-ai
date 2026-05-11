@@ -16,3 +16,4 @@
 
 Unfiltered:
 ***praw*** didn't worked bcz of the latest reddit policies. reddit has a legal firewall. Can't use it directly since it states cant use it for training model
+***got same hash*** 1 and 11 got same hash due to which i couldnt run the analyze sciptuntil syncing the sqlite db table again
