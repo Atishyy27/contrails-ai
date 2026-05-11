@@ -1,68 +1,32 @@
-# Contrails-AI: Forensic Ingestion & Signal Extraction Pipeline
+# Contrails-AI: Media Ingestion & Signal Exploration Prototype
 
 **Developer:** Atishay Jain  
-**Role:** Forensic Data Engineer (Pilot Phase)  
-**Objective:** Solving the 2026 Deepfake Ingestion Crisis through Signal-Aware Discovery and Mathematical Quantization.
+**Project Phase:** Alpha (Heuristic Testing & Dataset Ingestion)
 
----
+## Project Scope
+This is a prototype system designed to automate the discovery and ingestion of deepfake media for forensic analysis. It prioritizes data provenance and high-fidelity signal acquisition over distribution-layer scraping.
 
-## The Engineering Manifesto
+## Implementation Details
 
-In 2026, scraping "Deepfakes" from social media is a fool's errand. Platforms like X and YouTube perform aggressive H.264 macroblock quantization that acts as a "low-pass filter," effectively sandblasting the delicate forensic fingerprints left by generative models. 
+### 1. Ingestion & Systems Architecture
+* **Provenance-First Discovery:** Targets upstream generation hubs (Civitai User Galleries, Discord CDN stubs, HF Spaces) to capture latent lattice artifacts before platform-level H.264/H.265 re-encoding.
+* **Concurrent Worker:** `ThreadPoolExecutor` with a 60s I/O timeout to maximize corpus diversity under bandwidth constraints (1 Mbps).
+* **Integrity & Deduplication:** SHA-256 content hashing to prevent dataset poisoning through crosspost contamination.
 
-**Contrails-AI** is built on the philosophy that a dataset is only as good as its Signal-to-Noise Ratio (SNR). We don't just "download files." We hunt for **Latent Lattice Artifacts** using a multi-threaded, collision-aware pipeline that treats every pixel as a frequency coordinate.
+### 2. Heuristic Signal Analysis (Experimental)
+The analyzer uses a **Peak-to-Mean Ratio (PMR)** heuristic in the DCT (Discrete Cosine Transform) frequency domain to identify periodic upsampling residuals characteristic of Diffusion Transformers (DiT).
 
----
+* **Temporal Sampling:** Analyzes a 16-frame sequence per video to calculate mean PMR and inter-frame variance, accounting for temporal inconsistencies.
+* **Frequency Gating:** Isolates the high-frequency quadrant to separate stochastic scene entropy from structured generative artifacts.
+* **Status:** This is an exploratory heuristic, not a definitive classification head. It serves as a triage layer for the ingestion pipeline.
 
-## Task 1: Source Intelligence (Targeting the Zero-Day)
+## Preliminary Observations
+Initial tests show a measurable delta in PMR variance between AI-generated animations and low-bitrate "Real" samples (CCTV/Dashcam), though macroblock quantization in social media samples remains a significant confounding variable.
 
-Task 1 was to identify where the "Forensic Gold" lives. We moved upstream from the "Distribution Layer" (Social Media) to the "Generation Hubs" (Raw Model Outputs).
-
-### The Primary Target List
-* **Civitai Video Vault:** The epicenter for Flux.1 and LTX-Video fine-tunes. We target the "User Gallery" because these are often raw renders that preserve the high-frequency upsampling lattice identified in **Rombach (2022)**.
-* **Hugging Face Trending Spaces:** The lab where LivePortrait and Hedra v2 signatures land first. Monitoring these allows us to capture "Zero-Day" artifacts before they are "cleaned" by platform CDNs.
-* **Discord Master-Copy CDNs:** By scraping `cdn.discordapp.com` links from Kling and Luma showcase servers, we bypass the compression slop of the Discord UI feed, getting the closest thing to a "Bit-Perfect" fake.
-* **r/CCTV & r/Dashcam (The Domain Gap):** A critical addition. We need to establish a baseline for low-bitrate, high-grain stochastic noise to ensure our detector doesn't hallucinate "AI" every time it sees a grainy security camera.
-
----
-
-## Task 2: Multi-threaded Ingestion (High-Velocity Engineering)
-
-Building a pipeline on a **1 Mbps bottleneck** is a constraint-driven optimization problem. We implemented a "Greedy Filter" approach to ensure the 200-vid volume target was met without the script hanging.
-
-### 1. Concurrency via `ThreadPoolExecutor`
-We utilize parallel I/O streams to maximize our limited bandwidth. Instead of waiting for one heavy 4K file to finish, the script processes multiple small, high-signal samples simultaneously.
-
-### 2. The 60-Second Kill-Switch
-If a download exceeds 60 seconds, it is likely a high-resolution, long-form video that will choke the network. The script terminates the process, deletes the fragment, and moves to the next ID. This prioritizes **Corpus Diversity** over individual file size.
-
-### 3. SHA-256 Collision Logic
-Reddit and Discord are feedback loops of crossposted content. To prevent **Data Leakage** (training and testing on the same binary), every file is hashed. If a hash already exists, the script purges the redundant binary and cleans the SQLite ledger.
-
----
-
-## The Science: Frequency-Domain Feature Extraction
-
-This is the project's unique value proposition. We do not use a "Guessing Machine" (CNN/ViT). we use the **Discrete Cosine Transform (DCT)** to mathematically prove artificiality.
-
-### 1. From Energy to Structure
-Initially, we measured raw High-Frequency energy. However, nature videos (trees, grass) are high-entropy and have more raw energy than smooth AI faces.
-* **Real Average:** 1.16
-* **Animation Average:** 0.92  
-*(The Texture Trap: Nature is "noisier" than AI)*.
-
-### 2. The PMR Pivot (Peak-to-Mean Ratio)
-We realized that AI noise is **Periodic** (a mathematical grid), while natural noise is **Stochastic** (random grain). In the DCT domain, a grid manifests as a "Spike."
-
-We isolate the extreme high-frequency quadrant ($HF$) and calculate the ratio between the single highest energy peak and the average noise floor:
-
-$$PMR = \frac{\max(HF_{quadrant})}{\mu(HF_{quadrant}) + \epsilon}$$
-
-### 3. The Papers that Built the Math
-* **Rombach et al. (2022) [Latent Diffusion]:** Taught us that generating in a compressed latent space and upsampling back to pixels *guarantees* a lattice artifact. 
-* **Peebles & Xie (2023) [Scalable DiT]:** Explained the "Patch-based" nature of Sora/Kling. We look for the frequency spikes occurring at those $16 \times 16$ or $8 \times 8$ patch boundaries.
-* **Liu & Choi (2026) [Frequency-Aware Fusion]:** Provided the logic for using the frequency spectrum as a "Gate" to filter out low-freq "Scene Content" and focus purely on "Generative Residuals."
-* **FasterDiT (2024):** Defined our Bitrate requirement. If Bitrate $< 500kbps$, the PMR signal is considered "Forensically Dead."
+## Unfiltered Realities (Bumps)
+* **API Constraints:** Abandoned PRAW due to restrictive training policies; implemented guest-user JSON endpoint ingestion.
+* **Hash Collisions:** Identical binaries detected across subreddits (e.g., ID 22/30); implemented automated disk synchronization and duplicate purging.
+* **The Texture Trap:** Initial raw HF-mean was biased by natural high-entropy textures; pivoted to PMR to isolate periodic spikes.
 
 ---
 
