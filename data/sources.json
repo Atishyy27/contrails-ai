@@ -1,4 +1,485 @@
 [
-    {"platform": "reddit", "sub": "StableDiffusion", "category": "face-swap"},
-    {"platform": "civitai", "url": "https://civitai.com/api/v1/images", "category": "animation"}
+  {
+    "source_name": "Civitai Video Hub",
+    "platform": "civitai",
+    "url": "https://civitai.com/models?type=Checkpoint&checkpointType=Video",
+    "category": "character_animation",
+    "rationale": "Primary hub for Flux.1 and LTX-Video LoRAs. Preserves high-frequency lattice noise in raw user outputs (Rombach 2022)."
+  },
+  {
+    "source_name": "Hugging Face Trending Spaces",
+    "platform": "huggingface",
+    "url": "https://huggingface.co/spaces?sort=trending&search=video",
+    "category": "lip_sync",
+    "rationale": "Incubator for SOTA models (LivePortrait, Hedra v2). Captures 'Zero-Day' artifacts before platform compression."
+  },
+  {
+    "source_name": "r/StableDiffusion",
+    "platform": "reddit",
+    "url": "https://www.reddit.com/r/StableDiffusion/",
+    "category": "face_swap",
+    "rationale": "High-volume DiT pipeline testing. Essential for capturing patch-boundary discontinuities (Peebles 2023)."
+  },
+  {
+    "source_name": "r/KlingAI",
+    "platform": "reddit",
+    "url": "https://www.reddit.com/r/KlingAI/",
+    "category": "character_animation",
+    "rationale": "Focuses on high-parameter DiT models. Measures PMR variance in structured upsampling artifacts (Choi 2026)."
+  },
+  {
+    "source_name": "DeepfakeRefinery",
+    "platform": "telegram",
+    "url": "t.me/DeepfakeRefinery",
+    "category": "malicious_swaps",
+    "rationale": "Hosts deceptive content removed from social media, preserving artifacts usually filtered by platform CDNs."
+  },
+  {
+    "source_name": "Luma Dream Machine Explore",
+    "platform": "luma_labs",
+    "url": "https://lumalabs.ai/dream-machine/explore",
+    "category": "character_animation",
+    "rationale": "Official source for LDM-based video. Ideal for baseline GAN vs. Diffusion artifact comparison."
+  },
+  {
+    "source_name": "RunwayML Watch",
+    "platform": "runway",
+    "url": "https://runwayml.com/watch",
+    "category": "generative_slop",
+    "rationale": "High-fidelity text-to-video generations. Targets temporal consistency errors in latent-to-pixel upsampling."
+  },
+  {
+    "source_name": "r/SoraAi",
+    "platform": "reddit",
+    "url": "https://www.reddit.com/r/SoraAi/",
+    "category": "character_animation",
+    "rationale": "SOTA DiT architecture samples. Tracks the evolution of motion-free guidance (MFG) artifacts (GenTron 2024)."
+  },
+  {
+    "source_name": "r/LumaAI",
+    "platform": "reddit",
+    "url": "https://www.reddit.com/r/LumaAI/",
+    "category": "character_animation",
+    "rationale": "Captures temporal flickering artifacts inherent in Video LDMs (Blattmann 2023)."
+  },
+  {
+    "source_name": "r/AIvideo",
+    "platform": "reddit",
+    "url": "https://www.reddit.com/r/AIvideo/",
+    "category": "generative_slop",
+    "rationale": "General aggregator for diverse model architectures. Provides a broad spectrum of forensic signatures."
+  },
+  {
+    "source_name": "r/Midjourney",
+    "platform": "reddit",
+    "url": "https://www.reddit.com/r/midjourney/",
+    "category": "photo",
+    "rationale": "High-res synthetic images. Used to establish the HF-DCT ceiling for non-temporal generative noise."
+  },
+  {
+    "source_name": "r/FluxAI",
+    "platform": "reddit",
+    "url": "https://www.reddit.com/r/FluxAI/",
+    "category": "photo",
+    "rationale": "SOTA transformer-based image generation. Analyzes the 'domain gap' in high-frequency spectral energy."
+  },
+  {
+    "source_name": "X #klingai",
+    "platform": "x_twitter",
+    "url": "https://x.com/hashtag/klingai",
+    "category": "character_animation",
+    "rationale": "Viral source tracking. Analyzes how platform re-encoding (H.264) impacts artifact preservation."
+  },
+  {
+    "source_name": "X #soraai",
+    "platform": "x_twitter",
+    "url": "https://x.com/hashtag/soraai",
+    "category": "character_animation",
+    "rationale": "High-fidelity viral clips. Evaluates SNR PDF robustness against aggressive compression (FasterDiT 2024)."
+  },
+  {
+    "source_name": "X #deepfake",
+    "platform": "x_twitter",
+    "url": "https://x.com/hashtag/deepfake",
+    "category": "face_swap",
+    "rationale": "General threat discovery for malicious person-of-interest swaps and political disinformation."
+  },
+  {
+    "source_name": "Discord Kling AI Showcase",
+    "platform": "discord",
+    "url": "https://discord.gg/klingai",
+    "category": "character_animation",
+    "rationale": "Community-vetted high-quality outputs. Best source for 'Master Copy' forensic signals."
+  },
+  {
+    "source_name": "Discord Luma Showcase",
+    "platform": "discord",
+    "url": "https://discord.gg/lumalabs",
+    "category": "character_animation",
+    "rationale": "Targets temporal layer inconsistencies in the latest LDM iterations (Blattmann 2023)."
+  },
+  {
+    "source_name": "Discord Midjourney Alpha",
+    "platform": "discord",
+    "url": "https://discord.gg/midjourney",
+    "category": "photo",
+    "rationale": "High-fidelity static images. Baseline for periodic lattice noise without video artifacts."
+  },
+  {
+    "source_name": "Telegram SyntheticDaily",
+    "platform": "telegram",
+    "url": "t.me/SyntheticDaily",
+    "category": "lip_sync",
+    "rationale": "Daily feed of AI influencers and avatars. Captures sync-loss residuals in real-time generations."
+  },
+  {
+    "source_name": "AI-Video-Tubes",
+    "platform": "web_aggregator",
+    "url": "https://www.aivideostube.com",
+    "category": "generative_slop",
+    "rationale": "Platform-agnostic video aggregator. Useful for tracking content cross-pollination and duplication."
+  },
+  {
+    "source_name": "HeyGen Avatar Showcase",
+    "platform": "heygen",
+    "url": "https://www.heygen.com/showcase",
+    "category": "lip_sync",
+    "rationale": "Baseline for high-end professional lip-sync. Sets the 'Human-Perception' upper bound for detection."
+  },
+  {
+    "source_name": "ElevenLabs Showcase",
+    "platform": "elevenlabs",
+    "url": "https://elevenlabs.io/showcase",
+    "category": "audio",
+    "rationale": "Primary source for SOTA speech synthesis. Essential for multimodal (Audio-Visual) inconsistency training."
+  },
+  {
+    "source_name": "Suno Trending",
+    "platform": "suno_ai",
+    "url": "https://suno.com/explore",
+    "category": "audio",
+    "rationale": "SOTA music/vocal generation. Analyzes frequency residuals in synthetic audio waveforms."
+  },
+  {
+    "source_name": "r/NatureIsFuckingLit",
+    "platform": "reddit",
+    "url": "https://www.reddit.com/r/NatureIsFuckingLit/",
+    "category": "real",
+    "rationale": "Control group. Establishes the baseline stochastic noise floor for natural high-entropy textures."
+  },
+  {
+    "source_name": "r/travel",
+    "platform": "reddit",
+    "url": "https://www.reddit.com/r/travel/",
+    "category": "real",
+    "rationale": "Control group. Establishes camera-sensor noise floors across diverse global lighting conditions."
+  },
+  {
+    "source_name": "r/EarthPorn",
+    "platform": "reddit",
+    "url": "https://www.reddit.com/r/EarthPorn/",
+    "category": "real",
+    "rationale": "High-res nature imagery for static image DCT calibration (Stochastic vs. Periodic noise)."
+  },
+  {
+    "source_name": "r/StreetPhotography",
+    "platform": "reddit",
+    "url": "https://www.reddit.com/r/StreetPhotography/",
+    "category": "real",
+    "rationale": "Complex urban textures. Prevents false positives in frequency-aware fusion gates."
+  },
+  {
+    "source_name": "r/Documentary",
+    "platform": "reddit",
+    "url": "https://www.reddit.com/r/Documentary/",
+    "category": "real",
+    "rationale": "Natural human motion control. Baseline for temporal consistency and facial dynamics."
+  },
+  {
+    "source_name": "r/Sports",
+    "platform": "reddit",
+    "url": "https://www.reddit.com/r/sports/",
+    "category": "real",
+    "rationale": "High-velocity motion control. Establishes physics-based temporal constraints."
+  },
+  {
+    "source_name": "r/ComfyUI Community",
+    "platform": "reddit",
+    "url": "https://www.reddit.com/r/comfyui/",
+    "category": "character_animation",
+    "rationale": "Source for raw node-based generations (AnimateDiff). Highest variation in lattice noise."
+  },
+  {
+    "source_name": "r/Deforum",
+    "platform": "reddit",
+    "url": "https://www.reddit.com/r/deforum/",
+    "category": "character_animation",
+    "rationale": "Targets warping/interpolation artifacts unique to frame-by-frame 2D to 3D transformations."
+  },
+  {
+    "source_name": "Pika.art Showcase",
+    "platform": "pika",
+    "url": "https://pika.art/explore",
+    "category": "character_animation",
+    "rationale": "Analyzes the 'shimmering' artifacts characteristic of early transformer-based video upsamplers."
+  },
+  {
+    "source_name": "Leonardo.ai Gallery",
+    "platform": "leonardo_ai",
+    "url": "https://leonardo.ai/community-feed/",
+    "category": "photo",
+    "rationale": "Broad diversity of SDXL/Flux outputs. Used for batch forensic spectral profiling."
+  },
+  {
+    "source_name": "Midjourney Alpha Gallery",
+    "platform": "midjourney",
+    "url": "https://www.midjourney.com/showcase",
+    "category": "photo",
+    "rationale": "High-res GAN/Diffusion hybrid output. Targets the 'domain gap' in textures like hair/skin."
+  },
+  {
+    "source_name": "D-ID Creative Gallery",
+    "platform": "d_id",
+    "url": "https://www.d-id.com/gallery/",
+    "category": "lip_sync",
+    "rationale": "Analyzes facial retargeting artifacts in static-to-video portrait animation."
+  },
+  {
+    "source_name": "Synthesia Samples",
+    "platform": "synthesia",
+    "url": "https://www.synthesia.io/examples",
+    "category": "lip_sync",
+    "rationale": "Corporate avatar baseline. Tracks the lack of micro-expressions in generated 'Talking Heads'."
+  },
+  {
+    "source_name": "YouTube #aishorts",
+    "platform": "youtube",
+    "url": "https://www.youtube.com/hashtag/aishorts",
+    "category": "generative_slop",
+    "rationale": "Viral deepfake slop. Analyzes artifacts in extreme vertically compressed aspect ratios."
+  },
+  {
+    "source_name": "YouTube Two Minute Papers",
+    "platform": "youtube",
+    "url": "https://www.youtube.com/@TwoMinutePapers",
+    "category": "character_animation",
+    "rationale": "Demos for SOTA papers. Provides 'Ground Truth' for the latest architectural breakthroughs."
+  },
+  {
+    "source_name": "YouTube Corridor Crew",
+    "platform": "youtube",
+    "url": "https://www.youtube.com/@CorridorCrew",
+    "category": "face_swap",
+    "rationale": "High-end vfx-aided deepfakes. Ideal for testing 'Expert-level' detection robustness."
+  },
+  {
+    "source_name": "Discord Pika Showcase",
+    "platform": "discord",
+    "url": "https://discord.gg/pika",
+    "category": "character_animation",
+    "rationale": "Community-led testing of motion prompts. Essential for physics-based anomaly detection."
+  },
+  {
+    "source_name": "Discord HeyGen",
+    "platform": "discord",
+    "url": "https://discord.gg/heygen",
+    "category": "lip_sync",
+    "rationale": "Source for real-time video translation samples. Captures mouth-area blending artifacts."
+  },
+  {
+    "source_name": "Discord Runway",
+    "platform": "discord",
+    "url": "https://discord.gg/runway",
+    "category": "character_animation",
+    "rationale": "Early access to Gen-3 Alpha outputs. Monitors the next-gen DiT forensic evolution."
+  },
+  {
+    "source_name": "GitHub SOTA Demos",
+    "platform": "github",
+    "url": "https://github.com/trending/python",
+    "category": "character_animation",
+    "rationale": "Source for raw, locally-rendered video without platform re-encoding or noise filtering."
+  },
+  {
+    "source_name": "OpenAI Sora Gallery",
+    "platform": "openai",
+    "url": "https://openai.com/sora",
+    "category": "character_animation",
+    "rationale": "The industry benchmark for DiT video quality. Baseline for the 'Perfect' fake."
+  },
+  {
+    "source_name": "FaceMagic App Showcase",
+    "platform": "facemagic_app",
+    "url": "https://www.facemagic.ai/",
+    "category": "face_swap",
+    "rationale": "Mobile-based low-res face-swap discovery. Targets artifacts in edge-computing outputs."
+  },
+  {
+    "source_name": "Udio Trending",
+    "platform": "udio",
+    "url": "https://www.udio.com/",
+    "category": "audio",
+    "rationale": "Analyzes the spectral coherence of synthetic vocals in high-bitrate audio stems."
+  },
+  {
+    "source_name": "r/SFWdeepfakes",
+    "platform": "reddit",
+    "url": "https://www.reddit.com/r/SFWdeepfakes/",
+    "category": "face_swap",
+    "rationale": "Community focus on creative reenactment. Essential for facial landmark alignment analysis."
+  },
+  {
+    "source_name": "r/AIArt",
+    "platform": "reddit",
+    "url": "https://www.reddit.com/r/aiart/",
+    "category": "photo",
+    "rationale": "Broadest diversity of stylistic artifacts across DALL-E, SD, and Midjourney."
+  },
+  {
+    "source_name": "r/GeneratedVideo",
+    "platform": "reddit",
+    "url": "https://www.reddit.com/r/GeneratedVideo/",
+    "category": "generative_slop",
+    "rationale": "Historical archive for tracking the evolution of LDM temporal consistency from 2022-2026."
+  },
+  {
+    "source_name": "FaceForensics++ Archive",
+    "platform": "academic",
+    "url": "https://github.com/ondyari/FaceForensics",
+    "category": "face_swap",
+    "rationale": "Academic benchmark. Used for cross-validation against standardized forensic datasets."
+  },
+  {
+    "source_name": "DFDC Dataset Source",
+    "platform": "academic",
+    "url": "https://ai.facebook.com/datasets/dfdc/",
+    "category": "face_swap",
+    "rationale": "Established threat baseline for 'In-the-Wild' lighting and occlusions."
+  },
+  {
+    "source_name": "Celeb-DF Registry",
+    "platform": "academic",
+    "url": "https://github.com/yuezunli/celeb-df",
+    "category": "face_swap",
+    "rationale": "High-quality celebrity swaps. Primary baseline for retargeting and identity injection analysis."
+  },
+  {
+    "source_name": "r/EarthPorn (High-Entropy)",
+    "platform": "reddit",
+    "url": "https://www.reddit.com/r/EarthPorn/",
+    "category": "real",
+    "rationale": "Stochastic texture baseline for rocks, snow, and water to prevent upsampling false positives."
+  },
+  {
+    "source_name": "r/Cinematography (Control)",
+    "platform": "reddit",
+    "url": "https://www.reddit.com/r/cinematography/",
+    "category": "real",
+    "rationale": "Professional lens-based noise control group (Grain vs. Digital artifacts)."
+  },
+  {
+    "source_name": "r/Art (Human Baseline)",
+    "platform": "reddit",
+    "url": "https://www.reddit.com/r/Art/",
+    "category": "real",
+    "rationale": "Non-AI digital art control group to isolate 'Brush-stroke' vs 'Pixel-lattice' signatures."
+  },
+  {
+    "source_name": "Telegram FaceSwap_Labs",
+    "platform": "telegram",
+    "url": "t.me/FaceSwap_Labs",
+    "category": "face_swap",
+    "rationale": "Community-built local model outputs. Highest SNR for raw DeepFaceLab artifacts."
+  },
+  {
+    "source_name": "Discord Leonardo AI Showcase",
+    "platform": "discord",
+    "url": "https://discord.gg/leonardo-ai",
+    "category": "photo",
+    "rationale": "Targets artifacts in custom fine-tuned LoRAs (Realistic Skin/Eyes)."
+  },
+  {
+    "source_name": "r/AnimalsBeingDerps (Control)",
+    "platform": "reddit",
+    "url": "https://www.reddit.com/r/AnimalsBeingDerps/",
+    "category": "real",
+    "rationale": "Unpredictable non-human motion control group to calibrate temporal jitter detection."
+  },
+  {
+    "source_name": "X #AIAnimation",
+    "platform": "x_twitter",
+    "url": "https://x.com/hashtag/AIAnimation",
+    "category": "character_animation",
+    "rationale": "Tracks stylistic upsampling noise in animated/cartoon vs. realistic outputs."
+  },
+  {
+    "source_name": "Kuaishou Tech (Kling Parent) Demos",
+    "platform": "web_official",
+    "url": "https://www.kuaishou.com/en",
+    "category": "character_animation",
+    "rationale": "Source for original Kling v1.5/2.0 samples before social media reprocessing."
+  },
+  {
+    "source_name": "imgnAI Video Beta",
+    "platform": "discord_web",
+    "url": "https://imgnai.com/",
+    "category": "character_animation",
+    "rationale": "Newly launched DiT-based video generation. Beta phase outputs are often unoptimized, leaving clear patch-boundary artifacts (Peebles 2023) for detection training."
+  },
+  {
+    "source_name": "Giz.ai Face Swap",
+    "platform": "web_portal",
+    "url": "https://giz.ai/ai-video-generator",
+    "category": "face_swap",
+    "rationale": "Allows face-swapping without registration. This low barrier to entry makes it a primary source for 'In-the-Wild' malicious swaps and low-effort deceptive content."
+  },
+  {
+    "source_name": "PixVerse Discord",
+    "platform": "discord",
+    "url": "https://discord.gg/pixverse",
+    "category": "character_animation",
+    "rationale": "Community showcase for the PixVerse model. Known for high temporal consistency; useful for testing 'Motion-Free Guidance' (GenTron 2024) detection robustness."
+  },
+  {
+    "source_name": "Media.io Unfiltered",
+    "platform": "web_portal",
+    "url": "https://www.media.io/ai-video-generator",
+    "category": "malicious_swaps",
+    "rationale": "Marketed as a 'no-restriction' generator. Essential for capturing deceptive/NSFW threat signatures that are hard-blocked on Luma/Runway but prevalent in real-world misuse."
+  },
+  {
+    "source_name": "DomoAI Showcase",
+    "platform": "discord",
+    "url": "https://discord.gg/domoai",
+    "category": "character_animation",
+    "rationale": "Focuses on image-to-video and video-to-video stylization. Analyzes how 'Artistic Noise' interferes with the High-Frequency DCT quadrant (Choi 2026)."
+  },
+  {
+    "source_name": "BlipCut Community",
+    "platform": "discord",
+    "url": "https://discord.gg/blipcut",
+    "category": "lip_sync",
+    "rationale": "Emerging hub for generative lip-sync. Provides samples of multi-modal (Audio-Visual) misalignment, targeting the sync-loss metrics ($L_{sync}$) required for detection."
+  },
+  {
+    "source_name": "OpenArt Hub",
+    "platform": "aggregator",
+    "url": "https://openart.ai",
+    "category": "generative_slop",
+    "rationale": "Aggregates 100+ models (OpenAI, Seedance, Google). Provides high variation in lattice noise periodicity, preventing 'model-specific' overfitting in the detector."
+  },
+  {
+    "source_name": "VEO 3 Sample Registry",
+    "platform": "youtube_x",
+    "url": "https://www.youtube.com/results?search_query=VEO+3+AI+Video",
+    "category": "character_animation",
+    "rationale": "Google's SOTA video generation. Samples represent the current 'detection ceiling' for high-resolution, physically accurate temporal consistency."
+  },
+  {
+    "source_name": "Qxciw AI-Enhanced",
+    "platform": "niche_web",
+    "url": "https://www.qxciw.com",
+    "category": "face_swap",
+    "rationale": "Niche portal for AI-enhanced and high-fidelity face-swaps. Captures high-SNR (Signal-to-Noise Ratio) artifacts from custom local-render pipelines."
+  }
 ]
